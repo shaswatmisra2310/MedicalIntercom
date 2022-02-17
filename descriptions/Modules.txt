@@ -1,0 +1,22 @@
+1)User management module...................................................................2wks   3rd march
+2)Azure comm. services one-to-one chat[text comm.]......................................... 24th march.... masybe 1 week more
+3)Azure comm. services speech to text translation-Annotations...............................april 14th
+4)Voice chat-[Vo communication].....Video chat .............................................20th may
+5)Enable translation of speech..............................................................fix issues and documentation
+
+
+
+At each step
+Database(incrementally)
+
+________________________________________________________________________
+
+User management module [Roles]
+-Admin
+-Pathologist
+-Surgeon
+-Student/Viewer
+
+*Login/Logout                     UI-Login page
+*User creation                      -User creation
+                                    -Dashboard

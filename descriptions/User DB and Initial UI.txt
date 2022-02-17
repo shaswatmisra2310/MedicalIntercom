@@ -1,0 +1,52 @@
+Basic Database Design-
+
+User db
+TABLES-
+1) User table-( User) ID(GUID).......eg-283d6e6d-da51-4861-91bb-371c16cf7fc4[guid.NewId()]
+             -First Name  string
+             -Last Name   string
+             -RoleID-----foreign key
+             -Last login (Date Time)
+             -CreatedAt   (Date Time)
+             -CreatedBy   (GUID)
+             -UpdatedAt  (Date Time)
+             -UpdatedBy   (GUID)
+             -email  string
+             -password string[hash encrypted SHA256]
+             
+
+
+2) Roles table-
+             -(Role)ID-----primary key(GUID)
+             -Role Name   string
+             -CreatedAt   (Date Time)
+             -CreatedBy   (GUID)
+             -UpdatedAt  (Date Time)
+             -UpdatedBy   (GUI)
+
+
+
+Login-Forms based authentication
+**Manually create first user...Admin....**(GUID-->00000000-0000-0000-0000-000000000000)
+Logout-""
+  
+___________________________________________________________
+
+
+User management module [Roles]
+-Admin
+-Pathologist
+-Surgeon
+-Student/Viewer
+
+UI-
+
+CSS-bootstrap
+https://getbootstrap.com/docs/5.1/getting-started/introduction/
+
+
+https://startbootstrap.com/theme/sb-admin-2-------template for user creation
+*Login/Logout
+ UI-Login page
+*User creation--------ONLY ADMIN access[role name==admin]   
+Dashboard --navigation bar (through links....chats......) 
