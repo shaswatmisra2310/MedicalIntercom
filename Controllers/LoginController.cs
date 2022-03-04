@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Security.Claims;
 
+
 namespace MedicalIntercomProject.Controllers
 {
     public class LoginController : Controller
@@ -24,6 +25,7 @@ namespace MedicalIntercomProject.Controllers
         [Authorize]
         public IActionResult Loggedin()
         {
+            var temp = HttpContext.User.Claims.First(c => c.Type == ClaimTypes.Name).Value;
             return View();
         }
 
@@ -63,7 +65,7 @@ namespace MedicalIntercomProject.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync();
-            return RedirectToAction("Index");
+            return RedirectToAction("Index","Home");
         }
 
         [AllowAnonymous]
