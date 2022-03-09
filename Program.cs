@@ -1,6 +1,11 @@
+using MedicalIntercomProject;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+var connectionString = builder.Configuration.GetConnectionString("UserDbContext"); 
+builder.Services.AddDbContext<UserDbContext>(x => x.UseSqlServer(connectionString));
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
