@@ -1,7 +1,7 @@
 ﻿@model MedicalIntercomProject.Models.LoginViewModel
 <p>Logged in, now click button to logout</p>
 <br />
-<b>Welcome</b>
+<b>Welcome @ViewBag.CurrentUser</b>
 <br />
 <form asp-controller="Login" asp-action="Logout" method="post">
 	<button class="btn btn-primary btn-lg">Logout</button>

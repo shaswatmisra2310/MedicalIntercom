@@ -22,12 +22,6 @@ namespace MedicalIntercomProject.Controllers
         {
             return View();
         }
-        [Authorize]
-        public IActionResult Loggedin()
-        {
-            var temp = HttpContext.User.Claims.First(c => c.Type == ClaimTypes.Name).Value;
-            return View();
-        }
 
         [HttpPost]
         [AllowAnonymous]
@@ -56,7 +50,7 @@ namespace MedicalIntercomProject.Controllers
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
-            return RedirectToAction("LoggedIn");
+            return RedirectToAction("LoggedIn","Home");
         }
 
 
