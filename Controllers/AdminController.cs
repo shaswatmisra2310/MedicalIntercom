@@ -7,9 +7,10 @@ namespace MedicalIntercomProject.Controllers
     [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
-        public IActionResult Index()
+        
+
+        public ViewResult Index()
         {
-            RedirectToAction("LoggedIn", "Login");
             return View();
         }
         [HttpPost]
@@ -17,16 +18,39 @@ namespace MedicalIntercomProject.Controllers
 
         public IActionResult NewUser()
         {
+            
+                return View();
+        }
+        public void CreateNewUser()
+        {
+            using (var context = new UserDbContext())
+            {
+                var user = new User
+                {
+
+                    FirstName = "abc",
+                    LastName = "xyz",
+                    RoleId = 1,
+                    emailId = "abc@mail.com",
+                    password = "123"
+
+                };
+                context.UsersTable.Add(user);
+                context.SaveChanges();
+                
+            }
+
+
+        }
+
+        public IActionResult Created()
+        {
             return View();
         }
 
-        [HttpPost]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> CreateNewUser( NewUserViewModel newuser)
-        {
-
-            return View("Created","Admin");
-
-        }
-    }
+        
+        
+    }   
 }
+
+
