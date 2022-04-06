@@ -14,6 +14,8 @@ namespace MedicalIntercomProject.Models
 
         public string lastname { get; set; }
 
+        public string ChatId { get; set; }
+
         [Required]
 
         public string Role { get; set; }

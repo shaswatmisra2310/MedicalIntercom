@@ -32,14 +32,14 @@ namespace MedicalIntercomProject.Controllers
 
             var claims = new List<Claim>();
 
-            if (loginViewModel.username == "user1" && loginViewModel.password == "123")
+            if (loginViewModel.username == "admin@mail.com" && loginViewModel.password == "123")
             {
-                claims.Add(new Claim(ClaimTypes.Name, "user1"));
+                claims.Add(new Claim(ClaimTypes.Name, "admin@mail.com"));
                 claims.Add(new Claim(ClaimTypes.Role, "Admin"));
             }
-            else if (loginViewModel.username == "user2" && loginViewModel.password == "1234")
+            else if (loginViewModel.username == "user" && loginViewModel.password == "user")
             {
-                claims.Add(new Claim(ClaimTypes.Name, "user2"));
+                claims.Add(new Claim(ClaimTypes.Name, "user"));
                 claims.Add(new Claim(ClaimTypes.Role, "User"));
             }
             else

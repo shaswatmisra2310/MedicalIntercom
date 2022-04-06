@@ -11,7 +11,7 @@ namespace MedicalIntercomProject
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=UserDb");
+            
         }
 
         public UserDbContext(DbContextOptions options)
@@ -21,6 +21,10 @@ namespace MedicalIntercomProject
         }
         public DbSet<User> UsersTable { get; set; }
         public DbSet<Role> Roles { get; set; }
+
+        public DbSet<UserChatThreadMapping> Chatthreaduserstable { get; set; }
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Role>().HasData(new Role
@@ -37,7 +41,8 @@ namespace MedicalIntercomProject
                 Id = 1,
                 RoleId = 1,
                 emailId = "admin@mail.com",
-                password = "123"
+                password = "123",
+                ChatIdentity = "8:acs:55cdd872-42d3-4c8c-a242-f2191f9c8b94_00000010-838f-0201-f40f-343a0d0033b9"
 
             });
 

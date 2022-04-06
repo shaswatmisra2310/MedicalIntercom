@@ -23,6 +23,8 @@
 
         public string password { get; set; }
 
+        public string ChatIdentity { get; set; }
+
         public Role Role { get; set; }
 
     }
