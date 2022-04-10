@@ -7,17 +7,27 @@ namespace MedicalIntercomProject
     {
         public UserDbContext()
         {
+
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            
-        }
+        
 
-        public UserDbContext(DbContextOptions options)
+        public UserDbContext(DbContextOptions<UserDbContext> options)
             : base(options)
         {
 
+        }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                IConfigurationRoot configuration = new ConfigurationBuilder()
+                   .SetBasePath(Directory.GetCurrentDirectory())
+                   .AddJsonFile("appsettings.json")
+                   .Build();
+                var connectionString = configuration.GetConnectionString("UserDbContext");
+                optionsBuilder.UseSqlServer(connectionString);
+            }
         }
         public DbSet<User> UsersTable { get; set; }
         public DbSet<Role> Roles { get; set; }

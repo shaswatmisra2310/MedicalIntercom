@@ -1,10 +1,13 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 namespace MedicalIntercomProject.Models
 {
+    [Keyless]
     public class NewUserViewModel
     {
+        public int Id { get; set; }
         [Required]
         public string username { get; set; }
         [Required]

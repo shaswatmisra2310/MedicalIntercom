@@ -1,10 +1,7 @@
 ﻿@model MedicalIntercomProject.Models.LoginViewModel
-<p>Logged in(USER LOGIN)</p>
+<b>Welcome @ViewBag.CurrentUser</b>
 <br />
-<br />
-<form asp-controller="Chat" asp-action="Index" method="get">
-    <button class="btn btn-primary btn-lg">Chat</button>
-</form>
+<p>Logged in(USER LOGIN), now click button to logout</p>
 <br />
 
 <form asp-controller="Login" asp-action="Logout" method="post">

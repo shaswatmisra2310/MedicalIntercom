@@ -32,8 +32,16 @@ namespace MedicalIntercomProject.Controllers
         public IActionResult Loggedin()
         {
             ViewBag.CurrentUser = HttpContext.User.Claims.First(c => c.Type == ClaimTypes.Name).Value;
+            var CurrentUser = HttpContext.User.Claims.First(c => c.Type == ClaimTypes.Name).Value;
+            TempData["currentusername"]=CurrentUser;
             if (HttpContext.User.Claims.First(c => c.Type == ClaimTypes.Role).Value == "Admin")
                 return RedirectToAction("Index", "Admin");
+            RedirectToAction("Index", "Setup");
+            return View();
+        }
+
+        public IActionResult Loggedinuser()
+        {
             return View();
         }
 

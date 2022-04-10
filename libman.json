@@ -1,0 +1,10 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "chatui-core@1.3.0",
+      "destination": "wwwroot/js/chatui-core/"
+    }
+  ]
+}

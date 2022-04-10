@@ -17,6 +17,31 @@ namespace MedicalIntercomProject.Controllers
             return View(users);
         }
 
+        public ViewResult Details(int id)
+        {
+            User user = db.UsersTable.SingleOrDefault(s => s.Id == id);
+            return View(user);
+        }
+
+        public ActionResult Edit(int Id)
+        {
+            User user =db.UsersTable.Where(s => s.Id == Id).SingleOrDefault();
+            return View(user);
+        }
+
+        [HttpPost]
+        public ActionResult Edit(User user)
+        {
+            User userx = db.UsersTable.Where(db => db.Id == user.Id).SingleOrDefault();
+            if(user != null)
+            {
+                db.Entry(user).CurrentValues.SetValues(user);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View(user);
+        }
+
         public IActionResult Delete(int Id)
         {
             User user = db.UsersTable.FirstOrDefault(u => u.Id == Id);

@@ -2,3 +2,11 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 // Write your JavaScript code.
+import {
+    ChatClient,
+    ChatThread,
+    DeviceManager
+} from "@azure/communication-chat";
+import { AzureCommunicationTokenCredential } from "@azure/communication-common";
+
+const 

@@ -1,82 +1,22 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@model MedicalIntercomProject.Models.User
+﻿@model MedicalIntercomProject.Models.User
 
 <p>this is admin index page</p>
-@*<table>
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.emailId)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.password)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.RoleId)
-        </th>
-        <th></th>
-    </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.EmailID)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.password)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.RoleId)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
-        </td>
-    </tr>
-}<table>
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.emailId)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.password)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.RoleId)
-        </th>
-        <th></th>
-    </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.EmailID)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.password)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.RoleId)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
-        </td>
-    </tr>
-    
-}*@
-<form asp-controller="Admin" asp-action="NewUser" method="post">
+   @* DIFFERENCE BELOW*@
+
+<form asp-controller="Admin" asp-action="NewUser" method="post">     
 	<button class="btn btn-primary btn-lg">Create New User</button>
 </form>
-
-@*  model MedicalIntercomProject.Models.LoginViewModel
-    <p>Logged in, now click button to logout</p>
 <br />
-<b>Welcome @ViewBag.CurrentUser</b>
-<br />*@
+<form asp-controller="User" method="get">
+    <button class="btn btn-primary btn-lg">User Management</button>
+</form>
+<br />
+<form asp-controller="Admin" asp-action="OpenChat" method="get">
+    <button class="btn btn-primary btn-lg">Chat</button>
+</form>
+<br />
 <form asp-controller="Login" asp-action="Logout" method="post">
 	<button class="btn btn-primary btn-lg">Logout</button>
 </form>
