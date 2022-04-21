@@ -13,9 +13,12 @@ namespace MedicalIntercomProject.Controllers
     {
         private readonly ILogger<LoginController> _logger;
 
+        UserDbContext context;
+       
         public LoginController(ILogger<LoginController> logger)
         {
             _logger = logger;
+            context = new UserDbContext();
         }
         [AllowAnonymous]
         public IActionResult Index()
@@ -32,21 +35,36 @@ namespace MedicalIntercomProject.Controllers
 
             var claims = new List<Claim>();
 
-            if (loginViewModel.username == "admin@mail.com" && loginViewModel.password == "123")
-            {
-                claims.Add(new Claim(ClaimTypes.Name, "admin@mail.com"));
-                claims.Add(new Claim(ClaimTypes.Role, "Admin"));
-            }
-            else if (loginViewModel.username == "user" && loginViewModel.password == "user")
-            {
-                claims.Add(new Claim(ClaimTypes.Name, "user"));
-                claims.Add(new Claim(ClaimTypes.Role, "User"));
-            }
+            User user = context.UsersTable.Where(x=>x.emailId == loginViewModel.username).FirstOrDefault(); 
+            if (user == null)
+                return View("check username");
             else
             {
-                ViewBag.IsUnauthorized = true;
-                return View(nameof(Index));
+                if ( loginViewModel.password == user.password)
+                {
+                    claims.Add(new Claim(ClaimTypes.Email, user.emailId));//username or email from name
+                    var role = user.RoleId;
+                    if (role == 1)
+                        claims.Add(new Claim(ClaimTypes.Role, "Admin"));
+                    else
+                        claims.Add(new Claim(ClaimTypes.Role, "User"));
+                
+                }
+                
+                else
+                {
+                    ViewBag.IsUnauthorized = true;
+                    return View(nameof(Index));
+                }
+                String currentUser=new String("currentUser");
+                HttpContext.Session.SetString(currentUser, loginViewModel.username);
             }
+            // Set Session values during button click  
+
+            
+                
+                
+            
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));

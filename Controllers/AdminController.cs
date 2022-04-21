@@ -21,7 +21,7 @@ namespace MedicalIntercomProject.Controllers
             return View();
         }
         //[HttpPost]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
 
         public IActionResult NewUser()
         {

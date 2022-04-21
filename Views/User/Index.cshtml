@@ -43,7 +43,7 @@
                 @Html.DisplayNameFor(model => model.ChatIdentity)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Role)
+                @Html.DisplayNameFor(model => model.Role.RoleName)
             </th>
             <th></th>
         </tr>
@@ -82,7 +82,7 @@
                 @Html.DisplayFor(modelItem => item.ChatIdentity)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Role.ID)
+                @Html.DisplayFor(modelItem => item.Role.RoleName)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>|
