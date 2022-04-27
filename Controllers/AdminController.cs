@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using MedicalIntercomProject.Models;
 using Microsoft.AspNetCore.Authentication;
 using Azure.Communication.Identity;
+using System.Text;
+using System.Security.Cryptography;
 
 namespace MedicalIntercomProject.Controllers
 {
@@ -10,9 +12,11 @@ namespace MedicalIntercomProject.Controllers
     public class AdminController : Controller
     {
         UserDbContext context;
+        
         public AdminController()
         {
             context = new UserDbContext();
+            
         }
         
 
@@ -32,8 +36,12 @@ namespace MedicalIntercomProject.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateNewUser(NewUserViewModel newuserviewmodel)
         {
+            SHA256 SHA256instance = SHA256.Create();
             //await HttpContext.Response.CompleteAsync();???
-            
+            byte[] bytes = Encoding.ASCII.GetBytes(newuserviewmodel.password);
+            var passwordbytes = SHA256instance.ComputeHash(bytes);
+            var stringpassword= String.Join("", bytes);
+
             {
                 var user = new User();
                 {
@@ -42,9 +50,12 @@ namespace MedicalIntercomProject.Controllers
                     user.LastName = newuserviewmodel.lastname;
                     user.RoleId = int.Parse(newuserviewmodel.Role);                             
                     user.emailId = newuserviewmodel.username;
-                    user.password = newuserviewmodel.password;
+                    user.password = stringpassword;
                     user.ChatIdentity = GetIdentity();
 
+                    var createtime = DateTime.Now;
+                    user.CreatedAt = createtime;
+                    
                 };
                 context.UsersTable.Add(user);
                 await context.SaveChangesAsync();
@@ -57,8 +68,8 @@ namespace MedicalIntercomProject.Controllers
         public string GetIdentity()
         {
             //change from hard coded string later
-            string connectionString = "endpoint = https://chatcommunicationservices.communication.azure.com/;accesskey=S7oBb5x6Q4pTYgg10SZH3dXAFsrDYx1u9mxAWNjasuUkHAgtv0fse/zwkoJVmGHU7XjC0o6CcAs4ip8OpxYkFg==";
-            var client = new CommunicationIdentityClient("endpoint = https://chatcommunicationservices.communication.azure.com/;accesskey=S7oBb5x6Q4pTYgg10SZH3dXAFsrDYx1u9mxAWNjasuUkHAgtv0fse/zwkoJVmGHU7XjC0o6CcAs4ip8OpxYkFg==");
+            //string connectionString = "endpoint=https://commservicepoc.communication.azure.com/;accesskey=aW9DN0hy3PDGbum/fdGO05uL7SAJxQkFGRYDeLtxZiAmG9+LjVma/9fc0xD9bArpppZBRgj7EpV/OKzK5EvGIQ==";
+            var client = new CommunicationIdentityClient("endpoint=https://commservicepoc.communication.azure.com/;accesskey=aW9DN0hy3PDGbum/fdGO05uL7SAJxQkFGRYDeLtxZiAmG9+LjVma/9fc0xD9bArpppZBRgj7EpV/OKzK5EvGIQ==");
             var identityResponse = client.CreateUser();
             var identity = identityResponse.Value;
             ViewBag.identity = identity.Id;

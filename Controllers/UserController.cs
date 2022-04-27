@@ -36,6 +36,9 @@ namespace MedicalIntercomProject.Controllers
             if(user != null)
             {
                 db.Entry(user).CurrentValues.SetValues(user);
+                var edittime = DateTime.Now;
+                user.UpdatedAt = edittime;
+                
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }

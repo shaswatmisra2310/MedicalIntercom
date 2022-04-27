@@ -13,16 +13,16 @@ namespace MedicalIntercomProject.Controllers
     {
         UserDbContext db = new UserDbContext();
         
-        string connectionforazure = "endpoint = https://chatcommunicationservices.communication.azure.com/;accesskey=S7oBb5x6Q4pTYgg10SZH3dXAFsrDYx1u9mxAWNjasuUkHAgtv0fse/zwkoJVmGHU7XjC0o6CcAs4ip8OpxYkFg==";
-        string endpointstring = "https://chatcommunicationservices.communication.azure.com/";
+        string connectionforazure = "endpoint=https://commservicepoc.communication.azure.com/;accesskey=aW9DN0hy3PDGbum/fdGO05uL7SAJxQkFGRYDeLtxZiAmG9+LjVma/9fc0xD9bArpppZBRgj7EpV/OKzK5EvGIQ==";
+        string endpointstring = "endpoint=https://commservicepoc.communication.azure.com/";
         public IActionResult Index()
         {
             //var id = ViewBag.Identity;
 
-            var temp = HttpContext.Session.GetString("currentUser");
+            //var temp = HttpContext.User.Claims.First(c=>c.Type==ClaimTypes.Name);
             //var temp = HttpContext.User.Claims.First(x => x.Type == ClaimTypes.Name);
-            var temp2 = temp;
-            User user = db.UsersTable.Where(s => s.emailId == temp2).SingleOrDefault();
+            //var temp2 = temp;
+            User user=new Models.User(); /*= db.UsersTable.Where(s => s.emailId == temp2).SingleOrDefault();*/
 
             var AccessToken = GetAccessTokenChat(user);
 
@@ -47,7 +47,7 @@ namespace MedicalIntercomProject.Controllers
 
             return View();
         }
-        public async Task<AsyncPageable<ChatMessage>> GetMessages(ChatClient chatClient, string threadId)
+        public AsyncPageable<ChatMessage> GetMessages(ChatClient chatClient, string threadId)
 
         {
             
@@ -76,6 +76,7 @@ namespace MedicalIntercomProject.Controllers
             AsyncPageable<ChatThreadItem> chatThreadItems = chatClient.GetChatThreadsAsync();
             List<String> Listofchatthreadids =new List<String>();
             int count = 0;
+            //List<<String,String>> chatdetails = new List<<String,String >> ();
             await foreach (ChatThreadItem chatThreadItem in chatThreadItems)
             {
                 // Console.WriteLine($"{ chatThreadItem.Id}");
@@ -83,6 +84,7 @@ namespace MedicalIntercomProject.Controllers
                 
                     Listofchatthreadids.Insert(count, chatThreadItem.Id);
                     count++;
+
                 
             }
             return Listofchatthreadids;
@@ -96,6 +98,7 @@ namespace MedicalIntercomProject.Controllers
             var expiresOn = tokenResponse.Value.ExpiresOn;
             return token;
         }
+        
 
         public async Task NewChat(ChatClient chatClient, User user)
         {
@@ -114,7 +117,7 @@ namespace MedicalIntercomProject.Controllers
             return View(users);
         }
         [HttpPost]
-        public async Task<IActionResult> NewChatParticipants(ChatParticipantModel chatParticipantModel)
+        public IActionResult NewChatParticipants(ChatParticipantModel chatParticipantModel)
         {
 
 

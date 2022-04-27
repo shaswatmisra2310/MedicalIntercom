@@ -9,16 +9,18 @@ builder.Services.AddDbContext<UserDbContext>(options => options.UseSqlServer(con
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddDistributedMemoryCache();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(o =>
     {
         o.LoginPath = "/Home/Login";
     });
 
-builder.Services.AddDistributedMemoryCache();
-
+//builder.Services.AddDistributedMemoryCache();
+//builder.Services.TryAddSingleton<ISession, session>();
 builder.Services.AddSession(options =>
 {
+    options.Cookie.Name = "currentUser";
     options.IdleTimeout = TimeSpan.FromSeconds(1000);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;

@@ -5,10 +5,18 @@ namespace MedicalIntercomProject.Models
 {
     public class LoginViewModel
     {   
-        [Required]
-        public string username { get; set; }
-        [Required]
-        public string password { get; set; }
+       public string EmailID { get; set; }
+       
+       public string password { get; set; }
+
+        public LoginViewModel()
+        {
+            EmailID = "emailidhere";
+
+            password = "passwordhere";
+        }
        
     }
+
+    
 }

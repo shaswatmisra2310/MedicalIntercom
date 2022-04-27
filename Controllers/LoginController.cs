@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using System.Diagnostics;
 using System.Security.Claims;
-
+using System.Security.Cryptography;
+using System.Text;
 
 namespace MedicalIntercomProject.Controllers
 {
@@ -14,11 +16,13 @@ namespace MedicalIntercomProject.Controllers
         private readonly ILogger<LoginController> _logger;
 
         UserDbContext context;
-       
+        const string SessionName = "_Name";
         public LoginController(ILogger<LoginController> logger)
         {
             _logger = logger;
             context = new UserDbContext();
+        
+
         }
         [AllowAnonymous]
         public IActionResult Index()
@@ -33,14 +37,22 @@ namespace MedicalIntercomProject.Controllers
             if (!ModelState.IsValid)
                 return RedirectToAction("Index");
 
+            SHA256 SHA256instance = SHA256.Create();
+
             var claims = new List<Claim>();
 
-            User user = context.UsersTable.Where(x=>x.emailId == loginViewModel.username).FirstOrDefault(); 
+            User user = context.UsersTable.Where(x=>x.emailId == loginViewModel.EmailID).FirstOrDefault(); 
             if (user == null)
-                return View("check username");
+            {
+                ViewBag.IsUnauthorized = true;
+                return View(nameof(Index));
+            }
             else
             {
-                if ( loginViewModel.password == user.password)
+                byte[] bytes = Encoding.UTF8.GetBytes(loginViewModel.password);
+                var passwordcheck = SHA256instance.ComputeHash(bytes);
+                var stringpassword = String.Join("", passwordcheck);
+                if (stringpassword == user.password)
                 {
                     claims.Add(new Claim(ClaimTypes.Email, user.emailId));//username or email from name
                     var role = user.RoleId;
@@ -48,7 +60,11 @@ namespace MedicalIntercomProject.Controllers
                         claims.Add(new Claim(ClaimTypes.Role, "Admin"));
                     else
                         claims.Add(new Claim(ClaimTypes.Role, "User"));
-                
+                    
+                    var logintime = DateTime.Now;
+                    user.LastLogin = logintime;
+                    await context.SaveChangesAsync();
+
                 }
                 
                 else
@@ -56,15 +72,25 @@ namespace MedicalIntercomProject.Controllers
                     ViewBag.IsUnauthorized = true;
                     return View(nameof(Index));
                 }
-                String currentUser=new String("currentUser");
-                HttpContext.Session.SetString(currentUser, loginViewModel.username);
+                //String currentUser=new String("currentUser");
+                HttpContext.Session.SetString(SessionName, loginViewModel.EmailID);
+                //var curentUser = loginViewModel.username;
+                ViewBag.Name = HttpContext.Session.GetString(SessionName);
+                //ViewBag["currentUser"] = HttpContext.Session.GetString(SessionName);
+                //HttpContext.Session.SetString("currentUser", loginViewModel.username);
+                //var x = HttpContext.User.Identities.FirstOrDefault(ClaimTypes.Name);
             }
             // Set Session values during button click  
+            //  string About()
+            //{
+            //    ViewBag["currentUser"] = HttpContext.Session.GetString(SessionName);
+            //    return HttpContext.Session.GetString(SessionName);
+            //}
+            //var y = HttpContext.Session.GetString(SessionName);
 
-            
-                
-                
-            
+
+
+
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));

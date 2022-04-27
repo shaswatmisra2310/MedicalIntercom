@@ -7,5 +7,15 @@
         public string EmailId { get; set; }
 
         public String ChatIdentity { get; set; }
+
+        public ChatParticipantModel()
+        {
+            Id = 0;
+            EmailId = "someemailid";
+            ChatIdentity = "chatidentityfromportal";
+
+        }
     }
+
+   
 }
