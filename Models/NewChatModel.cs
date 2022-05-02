@@ -2,11 +2,11 @@
 
 namespace MedicalIntercomProject.Models
 {
-    public class ChatParticipantModel
+    public class NewChatModel
     {
-        
+        public string chattopic { get; set; }
 
-        public ChatClient chatclient { get; set; }
+        public ChatClient chatClient { get; set; }
 
         public User user { get; set; }
     }

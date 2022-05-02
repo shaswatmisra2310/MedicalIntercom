@@ -14,15 +14,15 @@ namespace MedicalIntercomProject.Controllers
         UserDbContext db = new UserDbContext();
         
         string connectionforazure = "endpoint=https://commservicepoc.communication.azure.com/;accesskey=aW9DN0hy3PDGbum/fdGO05uL7SAJxQkFGRYDeLtxZiAmG9+LjVma/9fc0xD9bArpppZBRgj7EpV/OKzK5EvGIQ==";
-        string endpointstring = "endpoint=https://commservicepoc.communication.azure.com/";
+        string endpointstring = "https://commservicepoc.communication.azure.com/";
         public IActionResult Index()
         {
             //var id = ViewBag.Identity;
 
             //var temp = HttpContext.User.Claims.First(c=>c.Type==ClaimTypes.Name);
-            //var temp = HttpContext.User.Claims.First(x => x.Type == ClaimTypes.Name);
-            //var temp2 = temp;
-            User user=new Models.User(); /*= db.UsersTable.Where(s => s.emailId == temp2).SingleOrDefault();*/
+            var temp = HttpContext.User.Claims.First(x => x.Type == ClaimTypes.Email);
+            var temp2 = temp;
+            User user= db.UsersTable.Where(s => s.emailId == temp2.Value).SingleOrDefault();
 
             var AccessToken = GetAccessTokenChat(user);
 
@@ -30,8 +30,8 @@ namespace MedicalIntercomProject.Controllers
             CommunicationTokenCredential communicationTokenCredential = new CommunicationTokenCredential(AccessToken);
             Uri endpoint = new Uri(endpointstring);
             ChatClient chatClient = new ChatClient(endpoint, communicationTokenCredential);
-            /*List<String> Listofthreads = GetThreads(chatClient);*/ //pass to view and print with click options
-
+            var Listofthreads = GetThreads(chatClient); //pass to view and print with click options
+            ViewBag.threads = Listofthreads;
             // async Task newchat(ChatClient chatClient, User user)
             //{
             //    //foreach (String idx in ids)
@@ -42,10 +42,10 @@ namespace MedicalIntercomProject.Controllers
 
             //    CreateChatThreadResult createChatThreadResult = await chatClient.CreateChatThreadAsync(topic: "CHAT TOPIC HERE", participants: new[] { chatParticipant });
             //}
-            
 
 
-            return View();
+
+            return View(Listofthreads);
         }
         public AsyncPageable<ChatMessage> GetMessages(ChatClient chatClient, string threadId)
 
@@ -71,24 +71,31 @@ namespace MedicalIntercomProject.Controllers
         }
 
         //List All chat threads
-        public async Task<List<String>> GetThreads(ChatClient chatClient)
+        public async  Task<AsyncPageable<ChatThreadItem>> GetThreads(ChatClient chatClient)
         {
             AsyncPageable<ChatThreadItem> chatThreadItems = chatClient.GetChatThreadsAsync();
-            List<String> Listofchatthreadids =new List<String>();
-            int count = 0;
-            //List<<String,String>> chatdetails = new List<<String,String >> ();
+            //var Listofchatthreadids = new string[] {"list od thread ids"};
+            //int count = 0;
+            //(List <string>, List <string>) = new List<string>, List<string>)
             await foreach (ChatThreadItem chatThreadItem in chatThreadItems)
             {
-                // Console.WriteLine($"{ chatThreadItem.Id}");
-                //if (chatThreadItem.Id != null)
-                
-                    Listofchatthreadids.Insert(count, chatThreadItem.Id);
-                    count++;
+                //    // Console.WriteLine($"{ chatThreadItem.Id}");
+                //    //if (chatThreadItem.Id != null)
 
-                
+                //        Listofchatthreadids.Append(chatThreadItem.Id);
+                //        count++;
+                ChatThreadClient chatThreadClient = chatClient.GetChatThreadClient(threadId: chatThreadItem.Id);
+
             }
-            return Listofchatthreadids;
+            //TempData["counter"] = count;
+            return chatThreadItems;
         }
+        //public string GetThread(ChatClient chatClient,ChatThreadClient chatThread)
+        //{
+        //    chatClient.GetChatThreadClient(chatThread.Id);
+        //    return chatThread.Id;
+        //}
+
     public string GetAccessTokenChat(User user)
         {
             var client = new CommunicationIdentityClient(connectionforazure);
@@ -99,36 +106,69 @@ namespace MedicalIntercomProject.Controllers
             return token;
         }
         
-
-        public async Task NewChat(ChatClient chatClient, User user)
+        public async Task CreateNewChat(NewChatModel newchatmodel)
         {
-            
-            var chatParticipant = new ChatParticipant(identifier: new CommunicationUserIdentifier(id: user.ChatIdentity))
+            var temp = HttpContext.User.Claims.First(x => x.Type == ClaimTypes.Email);
+            var temp2 = temp;
+            User user = db.UsersTable.Where(s => s.emailId == temp2.Value).SingleOrDefault();
+            newchatmodel.user = user;
+            newchatmodel.chattopic = "Chat Topic here";
+            var AccessToken = GetAccessTokenChat(user);
+
+
+            CommunicationTokenCredential communicationTokenCredential = new CommunicationTokenCredential(AccessToken);
+            Uri endpoint = new Uri(endpointstring);
+            ChatClient chatClient = new ChatClient(endpoint, communicationTokenCredential);
+            newchatmodel.chatClient = chatClient;
+
+
+            var chatParticipant = new ChatParticipant(identifier: new CommunicationUserIdentifier(id: newchatmodel.user.ChatIdentity))
             {
-                DisplayName = user.emailId
+                DisplayName = newchatmodel.user.emailId
+            };
+            CreateChatThreadResult createChatThreadResult = await newchatmodel.chatClient.CreateChatThreadAsync(topic: newchatmodel.chattopic, participants: new[] { chatParticipant });
+            RedirectToAction("AddAddUserToChat");
+        }
+        public IActionResult AddUserToChat(ChatParticipantModel chatparticipant)
+        {
+            var temp = HttpContext.User.Claims.First(x => x.Type == ClaimTypes.Email);
+            var temp2 = temp;
+            User userx = db.UsersTable.Where(s => s.emailId == temp2.Value).SingleOrDefault();
+            var AccessToken = GetAccessTokenChat(userx);
+
+
+            CommunicationTokenCredential communicationTokenCredential = new CommunicationTokenCredential(AccessToken);
+            Uri endpoint = new Uri(endpointstring);
+            ChatClient chatClient = new ChatClient(endpoint, communicationTokenCredential);
+            chatparticipant.chatclient = chatClient;
+
+            var chatParticipant = new ChatParticipant(identifier: new CommunicationUserIdentifier(id: chatparticipant.user.ChatIdentity))
+            {
+                DisplayName = chatparticipant.user.emailId
             };
 
-            CreateChatThreadResult createChatThreadResult = await chatClient.CreateChatThreadAsync(topic: "CHAT TOPIC HERE", participants: new[] { chatParticipant });
-        }
+            //ChatThreadResult = chatparticipant.chatclient.GetChatThreadClient();
+            return View();
+            }
 
-        public IActionResult NewChatPage()
-        {
-            IEnumerable<User> users = db.UsersTable.Select(s => s).ToList();
-            return View(users);
-        }
-        [HttpPost]
-        public IActionResult NewChatParticipants(ChatParticipantModel chatParticipantModel)
-        {
+        //public IActionResult NewChatPage()
+        //{
+        //    IEnumerable<User> users = db.UsersTable.Select(s => s).ToList();
+        //    return View(users);
+        //}
+        //[HttpPost]
+        //public IActionResult NewChatParticipants(ChatParticipantModel chatParticipantModel)
+        //{
 
 
-            var chatParticipant = new ChatParticipant(identifier: new CommunicationUserIdentifier(id: chatParticipantModel.ChatIdentity))
-            {
+        //    var chatParticipant = new ChatParticipant(identifier: new CommunicationUserIdentifier(id: chatParticipantModel.ChatIdentity))
+        //    {
 
-                DisplayName = chatParticipantModel.EmailId
-            };
+        //        DisplayName = chatParticipantModel.EmailId
+        //    };
 
-            return RedirectToAction("NewChatPage");
-        }
+        //    return RedirectToAction("NewChatPage");
+        //}
 
 
 

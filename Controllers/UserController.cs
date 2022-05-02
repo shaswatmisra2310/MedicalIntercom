@@ -1,5 +1,6 @@
 ﻿using MedicalIntercomProject.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace MedicalIntercomProject.Controllers
 {
@@ -33,12 +34,15 @@ namespace MedicalIntercomProject.Controllers
         public ActionResult Edit(User user)
         {
             User userx = db.UsersTable.Where(db => db.Id == user.Id).SingleOrDefault();
-            if(user != null)
+            var temp = HttpContext.User.Claims.First(x => x.Type == ClaimTypes.Email);
+            var temp2 = temp;
+            User usery = db.UsersTable.Where(s => s.emailId == temp2.Value).SingleOrDefault();
+            if (user != null)
             {
                 db.Entry(user).CurrentValues.SetValues(user);
                 var edittime = DateTime.Now;
                 user.UpdatedAt = edittime;
-                
+                user.UpdatedBy = usery.emailId;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }

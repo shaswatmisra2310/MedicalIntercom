@@ -49,12 +49,12 @@ namespace MedicalIntercomProject.Controllers
             }
             else
             {
-                byte[] bytes = Encoding.UTF8.GetBytes(loginViewModel.password);
-                var passwordcheck = SHA256instance.ComputeHash(bytes);
-                var stringpassword = String.Join("", passwordcheck);
-                if (stringpassword == user.password)
+                //byte[] bytes = Encoding.UTF8.GetBytes(loginViewModel.password);
+                //var passwordcheck = SHA256instance.ComputeHash(bytes);
+                //var stringpassword = String.Join("", passwordcheck);
+                if (loginViewModel.password == user.password)
                 {
-                    claims.Add(new Claim(ClaimTypes.Email, user.emailId));//username or email from name
+                    claims.Add(new Claim(ClaimTypes.Email, user.emailId));
                     var role = user.RoleId;
                     if (role == 1)
                         claims.Add(new Claim(ClaimTypes.Role, "Admin"));
@@ -64,7 +64,8 @@ namespace MedicalIntercomProject.Controllers
                     var logintime = DateTime.Now;
                     user.LastLogin = logintime;
                     await context.SaveChangesAsync();
-
+                    ViewBag.Name = user.emailId;
+                    
                 }
                 
                 else

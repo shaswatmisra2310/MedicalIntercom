@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 namespace MedicalIntercomProject.Models
 {
     [Keyless]
-    public class NewUserViewModel
+    public class NewUserViewModel 
     {
         public int Id { get; set; }
         [Required]

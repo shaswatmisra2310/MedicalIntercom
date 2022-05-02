@@ -1,7 +1,16 @@
 ﻿<html>
     <body>
         <form>
-        <button id="newchat-button" asp-controller="Chat" asp-action="NewChatPage" >create new chat</button>
+        <button id="newchat-button" asp-controller="Chat" asp-action="CreateNewChat" >create new chat</button>
         </form>
-    </body>
+       @* for(int i = 0; i <  ViewBag.count; i++)
+            {
+                <b>ViewBag.threads[i]  </b>
+                
+            }*@
+          @for(int i=0;i< ViewBag.count;i++)
+    {
+        @Html.Raw(ViewBag.threads[i]); <br />
+    }
+</body>
 </html>

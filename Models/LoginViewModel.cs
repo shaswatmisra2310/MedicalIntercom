@@ -9,13 +9,6 @@ namespace MedicalIntercomProject.Models
        
        public string password { get; set; }
 
-        public LoginViewModel()
-        {
-            EmailID = "emailidhere";
-
-            password = "passwordhere";
-        }
-       
     }
 
     
