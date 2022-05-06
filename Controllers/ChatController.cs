@@ -30,8 +30,11 @@ namespace MedicalIntercomProject.Controllers
             CommunicationTokenCredential communicationTokenCredential = new CommunicationTokenCredential(AccessToken);
             Uri endpoint = new Uri(endpointstring);
             ChatClient chatClient = new ChatClient(endpoint, communicationTokenCredential);
-            var Listofthreads = GetThreads(chatClient); //pass to view and print with click options
-            ViewBag.threads = Listofthreads;
+            CurrentUserThreads currentUserThreads = new CurrentUserThreads();
+            currentUserThreads.chatClient=chatClient;
+
+            ViewBag.threads = GetThreads(currentUserThreads).ToString(); //pass to view and print with click options
+            //ViewBag.threads = Listofthreads;
             // async Task newchat(ChatClient chatClient, User user)
             //{
             //    //foreach (String idx in ids)
@@ -45,50 +48,60 @@ namespace MedicalIntercomProject.Controllers
 
 
 
-            return View(Listofthreads);
+            return View();
         }
-        public AsyncPageable<ChatMessage> GetMessages(ChatClient chatClient, string threadId)
+        //public AsyncPageable<ChatMessage> GetMessages(ChatClient chatClient, string threadId)
 
-        {
+        //{
             
-            ChatThreadClient chatThreadClient = chatClient.GetChatThreadClient(threadId: threadId);
-            AsyncPageable<ChatMessage> allMessages = chatThreadClient.GetMessagesAsync();
-            //await foreach (ChatMessage message in allMessages)
+        //    ChatThreadClient chatThreadClient = chatClient.GetChatThreadClient(threadId: threadId);
+        //    AsyncPageable<ChatMessage> allMessages = chatThreadClient.GetMessagesAsync();
+        //    //await foreach (ChatMessage message in allMessages)
             
-            return allMessages;
-                    //messages($"{message.Id}:{message.Content.Message}");
+        //    return allMessages;
+        //            //messages($"{message.Id}:{message.Content.Message}");
             
-        }
-        public async Task<SendChatMessageResult> SendMessage(ChatThreadClient chatThreadClient)
-        {
-            SendChatMessageOptions sendChatMessageOptions = new SendChatMessageOptions()
-            {
-                Content = "This is the message",
-                MessageType = ChatMessageType.Text
-            };
-            SendChatMessageResult sendChatMessageResult = await chatThreadClient.SendMessageAsync(sendChatMessageOptions);
-            return sendChatMessageResult;
-        }
+        //}
+        //public async Task<SendChatMessageResult> SendMessage(ChatThreadClient chatThreadClient)
+        //{
+        //    SendChatMessageOptions sendChatMessageOptions = new SendChatMessageOptions()
+        //    {
+        //        Content = "This is the message",
+        //        MessageType = ChatMessageType.Text
+        //    };
+        //    SendChatMessageResult sendChatMessageResult = await chatThreadClient.SendMessageAsync(sendChatMessageOptions);
+        //    return sendChatMessageResult;
+        //}
 
         //List All chat threads
-        public async  Task<AsyncPageable<ChatThreadItem>> GetThreads(ChatClient chatClient)
+        public List<CurrentUserThreads> GetThreads(CurrentUserThreads currentUserThreads)
         {
-            AsyncPageable<ChatThreadItem> chatThreadItems = chatClient.GetChatThreadsAsync();
-            //var Listofchatthreadids = new string[] {"list od thread ids"};
-            //int count = 0;
-            //(List <string>, List <string>) = new List<string>, List<string>)
-            await foreach (ChatThreadItem chatThreadItem in chatThreadItems)
+
+            var chatThreadItems =  currentUserThreads.chatClient.GetChatThreads().ToList();
+
+            List<CurrentUserThreads> list = new List<CurrentUserThreads>();
+            
             {
-                //    // Console.WriteLine($"{ chatThreadItem.Id}");
-                //    //if (chatThreadItem.Id != null)
-
-                //        Listofchatthreadids.Append(chatThreadItem.Id);
-                //        count++;
-                ChatThreadClient chatThreadClient = chatClient.GetChatThreadClient(threadId: chatThreadItem.Id);
-
+                CurrentUserThreads item = new CurrentUserThreads();
+                {
+                    item.chatClient = currentUserThreads.chatClient;
+                }
+                
+                foreach (ChatThreadItem chatThreadItem in chatThreadItems)
+                {
+                    item.ChatTopics = chatThreadItem.Topic;
+                    item.ChatThreadIds = chatThreadItem.Id;
+                    item.chatClient = item.chatClient;
+                    list.Add(item);   
+                }
+                
             }
-            //TempData["counter"] = count;
-            return chatThreadItems;
+            return list;
+        }
+        public IActionResult ChatThreads(IEnumerable<CurrentUserThreads> list)
+        {
+            
+            return View();
         }
         //public string GetThread(ChatClient chatClient,ChatThreadClient chatThread)
         //{
@@ -106,50 +119,51 @@ namespace MedicalIntercomProject.Controllers
             return token;
         }
         
-        public async Task CreateNewChat(NewChatModel newchatmodel)
-        {
-            var temp = HttpContext.User.Claims.First(x => x.Type == ClaimTypes.Email);
-            var temp2 = temp;
-            User user = db.UsersTable.Where(s => s.emailId == temp2.Value).SingleOrDefault();
-            newchatmodel.user = user;
-            newchatmodel.chattopic = "Chat Topic here";
-            var AccessToken = GetAccessTokenChat(user);
+        //public async Task<IActionResult> CreateNewChat(NewChatModel newchatmodel)
+        //{
+        //    var temp = HttpContext.User.Claims.First(x => x.Type == ClaimTypes.Email);
+        //    var temp2 = temp;
+        //    User user = db.UsersTable.Where(s => s.emailId == temp2.Value).SingleOrDefault();
+        //    newchatmodel.user = user;
+        //    newchatmodel.chattopic = "Chat Topic here";
+        //    var AccessToken = GetAccessTokenChat(user);
 
 
-            CommunicationTokenCredential communicationTokenCredential = new CommunicationTokenCredential(AccessToken);
-            Uri endpoint = new Uri(endpointstring);
-            ChatClient chatClient = new ChatClient(endpoint, communicationTokenCredential);
-            newchatmodel.chatClient = chatClient;
+        //    CommunicationTokenCredential communicationTokenCredential = new CommunicationTokenCredential(AccessToken);
+        //    Uri endpoint = new Uri(endpointstring);
+        //    ChatClient chatClient = new ChatClient(endpoint, communicationTokenCredential);
+        //    newchatmodel.chatClient = chatClient;
 
 
-            var chatParticipant = new ChatParticipant(identifier: new CommunicationUserIdentifier(id: newchatmodel.user.ChatIdentity))
-            {
-                DisplayName = newchatmodel.user.emailId
-            };
-            CreateChatThreadResult createChatThreadResult = await newchatmodel.chatClient.CreateChatThreadAsync(topic: newchatmodel.chattopic, participants: new[] { chatParticipant });
-            RedirectToAction("AddAddUserToChat");
-        }
-        public IActionResult AddUserToChat(ChatParticipantModel chatparticipant)
-        {
-            var temp = HttpContext.User.Claims.First(x => x.Type == ClaimTypes.Email);
-            var temp2 = temp;
-            User userx = db.UsersTable.Where(s => s.emailId == temp2.Value).SingleOrDefault();
-            var AccessToken = GetAccessTokenChat(userx);
+        //    var chatParticipant = new ChatParticipant(identifier: new CommunicationUserIdentifier(id: newchatmodel.user.ChatIdentity))
+        //    {
+        //        DisplayName = newchatmodel.user.emailId
+        //    };
+        //    CreateChatThreadResult createChatThreadResult = await newchatmodel.chatClient.CreateChatThreadAsync(topic: newchatmodel.chattopic, participants: new[] { chatParticipant });
+        //    return View();
+        //    //RedirectToAction("AddAddUserToChat");
+        //}
+        //public IActionResult AddUserToChat(ChatParticipantModel chatparticipant)
+        //{
+        //    var temp = HttpContext.User.Claims.First(x => x.Type == ClaimTypes.Email);
+        //    var temp2 = temp;
+        //    User userx = db.UsersTable.Where(s => s.emailId == temp2.Value).SingleOrDefault();
+        //    var AccessToken = GetAccessTokenChat(userx);
 
 
-            CommunicationTokenCredential communicationTokenCredential = new CommunicationTokenCredential(AccessToken);
-            Uri endpoint = new Uri(endpointstring);
-            ChatClient chatClient = new ChatClient(endpoint, communicationTokenCredential);
-            chatparticipant.chatclient = chatClient;
+        //    CommunicationTokenCredential communicationTokenCredential = new CommunicationTokenCredential(AccessToken);
+        //    Uri endpoint = new Uri(endpointstring);
+        //    ChatClient chatClient = new ChatClient(endpoint, communicationTokenCredential);
+        //    chatparticipant.chatclient = chatClient;
 
-            var chatParticipant = new ChatParticipant(identifier: new CommunicationUserIdentifier(id: chatparticipant.user.ChatIdentity))
-            {
-                DisplayName = chatparticipant.user.emailId
-            };
+        //    var chatParticipant = new ChatParticipant(identifier: new CommunicationUserIdentifier(id: chatparticipant.user.ChatIdentity))
+        //    {
+        //        DisplayName = chatparticipant.user.emailId
+        //    };
 
-            //ChatThreadResult = chatparticipant.chatclient.GetChatThreadClient();
-            return View();
-            }
+        //    //ChatThreadResult = chatparticipant.chatclient.GetChatThreadClient();
+        //    return View();
+        //    }
 
         //public IActionResult NewChatPage()
         //{

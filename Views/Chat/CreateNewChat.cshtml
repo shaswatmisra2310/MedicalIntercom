@@ -1,4 +1,4 @@
-﻿@model IEnumerable<MedicalIntercomProject.Models.User>
+﻿@model NewChatModel
 <!DOCTYPE html>
 <html>
 <head>
@@ -66,10 +66,10 @@
   <button onclick="myFunction()" class="dropbtn">Click to select users one by one</button>
   <div id="myDropdown" class="dropdown-content">
     <input type="text" placeholder="Search.." id="myInput" onkeyup="filterFunction()">
-     @foreach (var item in Model) 
+     @foreach (var item in (IEnumerable<NewChatModel>) Model)
     {
-    <a href="javascript:alert('@item.emailId added')"> @Html.DisplayFor(modelItem => item.emailId) </a>
-    var idselected = @item.Id;
+    <a href="javascript:alert('@item.User.emailId added')"> @Html.DisplayFor(modelItem => item.User.emailId) </a>
+    var idselected = @item.User.Id;
     <br />
     }
   </div>
