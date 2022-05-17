@@ -1,0 +1,21 @@
+﻿@model Message;
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+    @foreach (var message in ViewBag.varlist)
+    {
+        <input type="hidden" name="chatthreadid" value="@message.chatthreadId">
+   <p> @message.senderDisplayName :  @message.chatmessage </p><br />
+    }                              
+    @using(Html.BeginForm("SendMessage", "Chat"))
+{
+    
+    @foreach (var message in ViewBag.varlist)
+    {
+        <input type="hidden" name="chatthreadId" value="@message.chatthreadId">
+        
+    }
+    <input type="text" name="message" >
+    <input type="submit" name="sendmessage" >
+}

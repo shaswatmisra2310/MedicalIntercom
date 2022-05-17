@@ -1,0 +1,51 @@
+﻿@model IEnumerable<MedicalIntercomProject.Models.User>
+
+@{
+    ViewData["Title"] = "AddUserToChat";
+}
+
+<h1>Add User To Chat</h1>
+@*
+<p>
+    <a asp-action="Create">Create New chat</a>
+</p>*@
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LastName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.emailId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ChatIdentity)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FirstName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.emailId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ChatIdentity)
+            </td>
+            <td>
+                <a asp-action="Add" asp-route-id="@item.Id">Add</a> 
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
