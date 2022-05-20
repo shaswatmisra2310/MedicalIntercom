@@ -5,6 +5,7 @@
 }
 
 <h1>Add User To Chat</h1>
+<input type="hidden" name="chatthreadid" value="@ViewBag.newchatmodel.chatthreadId" />
 @*
 <p>
     <a asp-action="Create">Create New chat</a>
@@ -43,7 +44,7 @@
                 @Html.DisplayFor(modelItem => item.ChatIdentity)
             </td>
             <td>
-                <a asp-action="Add" asp-route-id="@item.Id">Add</a> 
+                @Html.ActionLink("Add","Add","Chat",new {id=@item.ChatIdentity})        @*send new chat model, basically chat thread id from create new chat to add user to chat*@
             </td>
         </tr>
 }

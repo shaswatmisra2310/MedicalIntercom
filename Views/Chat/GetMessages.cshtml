@@ -3,10 +3,18 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 
+        
+
     @foreach (var message in ViewBag.varlist)
     {
         <input type="hidden" name="chatthreadid" value="@message.chatthreadId">
+        
+        //<input asp-controller="Chat" asp-action="DeleteMessage" asp-all-route-data="parms">
    <p> @message.senderDisplayName :  @message.chatmessage </p><br />
+   <form asp-action="DeleteMessage">
+   <input type="hidden" name="chatthreadid" value="@message.chatthreadId">
+   <input name="messageid" type="submit" value="@message.MessageId" >
+   </form>
     }                              
     @using(Html.BeginForm("SendMessage", "Chat"))
 {
