@@ -11,10 +11,13 @@
         
         //<input asp-controller="Chat" asp-action="DeleteMessage" asp-all-route-data="parms">
    <p> @message.senderDisplayName :  @message.chatmessage </p><br />
-   <form asp-action="DeleteMessage">
+   @*<form asp-action="DeleteMessage">
    <input type="hidden" name="chatthreadid" value="@message.chatthreadId">
    <input name="messageid" type="submit" value="@message.MessageId" >
-   </form>
+   </form>*@
+
+   @Html.ActionLink("Delete","DeleteMessage","Chat", new { messageid=@message.MessageId, chatthreadId=@message.chatthreadId})
+   
     }                              
     @using(Html.BeginForm("SendMessage", "Chat"))
 {
@@ -27,3 +30,4 @@
     <input type="text" name="message" >
     <input type="submit" name="sendmessage" >
 }
+@Html.ActionLink("Back to chat home","Index","Chat")

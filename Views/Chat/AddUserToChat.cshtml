@@ -5,7 +5,10 @@
 }
 
 <h1>Add User To Chat</h1>
-<input type="hidden" name="chatthreadid" value="@ViewBag.newchatmodel.chatthreadId" />
+@Html.BeginForm("Add","Chat")
+{
+@*<input type="hidden" name="chatthreadid" value="@ViewBag.chatthreadId" />*@
+
 @*
 <p>
     <a asp-action="Create">Create New chat</a>
@@ -44,9 +47,14 @@
                 @Html.DisplayFor(modelItem => item.ChatIdentity)
             </td>
             <td>
-                @Html.ActionLink("Add","Add","Chat",new {id=@item.ChatIdentity})        @*send new chat model, basically chat thread id from create new chat to add user to chat*@
+                @Html.ActionLink("Add","Add","Chat",new {id=@item.ChatIdentity ,chatthreadid=@ViewBag.chatthreadId})        @*send new chat model, basically chat thread id from create new chat to add user to chat*@
             </td>
         </tr>
+        }
+
 }
+@Html.BeginForm("ChatCreated","Chat")
+      @Html.ActionLink("Done","ChatCreated","Chat", new {@ViewBag.chatthreadId})
+
     </tbody>
 </table>

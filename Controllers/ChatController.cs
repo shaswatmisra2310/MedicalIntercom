@@ -11,23 +11,18 @@ namespace MedicalIntercomProject.Controllers
 {
     public class ChatController : Controller
     {
-        //public List<Message> listx = new List<Message>();
-        //public Message messagevar = new Message();
+       
         UserDbContext db;
-        //context = new UserDbContext();
         public ChatController(UserDbContext _db)
         {
             db = _db;
         }
-        //UserDbContext db = new UserDbContext();
-        
+
         string connectionforazure = "endpoint=https://commservicepoc.communication.azure.com/;accesskey=aW9DN0hy3PDGbum/fdGO05uL7SAJxQkFGRYDeLtxZiAmG9+LjVma/9fc0xD9bArpppZBRgj7EpV/OKzK5EvGIQ==";
         string endpointstring = "https://commservicepoc.communication.azure.com/";
         public IActionResult Index()
         {
-            //var id = ViewBag.Identity;
-
-            //var temp = HttpContext.User.Claims.First(c=>c.Type==ClaimTypes.Name);
+            
             var temp = HttpContext.User.Claims.First(x => x.Type == ClaimTypes.Email);
             var temp2 = temp;
             User user= db.UsersTable.Where(s => s.emailId == temp2.Value).SingleOrDefault();
@@ -84,7 +79,6 @@ namespace MedicalIntercomProject.Controllers
                     Message messagevar = new Message();
                     messagevar.MessageId = messages.Id;
                     messagevar.chatmessage = messages.Content.Message;
-                    //messagevar.chatmessage = "trial";
                     messagevar.chatthreadId = chatthreadId;
                     messagevar.senderDisplayName = messages.SenderDisplayName;
                     listx.Add(messagevar);
@@ -109,16 +103,11 @@ namespace MedicalIntercomProject.Controllers
             Uri endpoint = new Uri(endpointstring);
             
             ChatClient chatClient = new ChatClient(endpoint, communicationTokenCredential);
-            //SendChatMessageOptions sendChatMessageOptions = new SendChatMessageOptions()
-            //{
-            //    Content = message,
-            //    MessageType = ChatMessageType.Text
-            //};
+            
             ChatThreadClient chatThreadClient = chatClient.GetChatThreadClient(threadId: chatthreadId);
-            //SendChatMessageResult sendChatMessageResult = await chatThreadClient.SendMessageAsync(sendChatMessageOptions);
+           
             SendChatMessageResult sendChatMessageResult = chatThreadClient.SendMessage(message,ChatMessageType.Text,user.emailId);
 
-            //chatThreadClient.UpdateMessage(sendChatMessageResult.Id, message);
             return RedirectToAction("GetMessages",new RouteValueDictionary(new {Controller="Chat", Action="GetMessages", chatThreadId=chatthreadId}));
         }
 
@@ -135,12 +124,15 @@ namespace MedicalIntercomProject.Controllers
                 
                 foreach (ChatThreadItem chatThreadItem in chatThreadItems)
                 {
-                    CurrentUserThreads item = new CurrentUserThreads();
-                    item.chatClient = currentUserThreads.chatClient;
-                    item.ChatTopics = chatThreadItem.Topic;
-                    item.ChatThreadIds = chatThreadItem.Id;
-                    item.chatClient = item.chatClient;
-                    list.Add(item);   
+                    if (chatThreadItem.DeletedOn != null)
+                    {
+                        CurrentUserThreads item = new CurrentUserThreads();
+                        item.chatClient = currentUserThreads.chatClient;
+                        item.ChatTopics = chatThreadItem.Topic;
+                        item.ChatThreadIds = chatThreadItem.Id;
+                        item.chatClient = item.chatClient;
+                        list.Add(item);
+                    }
                 }
                 
             }
@@ -197,11 +189,13 @@ namespace MedicalIntercomProject.Controllers
             newchatmodel.chattopic = createChatThreadResult.ChatThread.Topic;
             newchatmodel.chatthreadId = createChatThreadResult.ChatThread.Id;
 
-            ViewBag.newchatmodel=newchatmodel;
+            ViewBag.chatthreadId=newchatmodel.chatthreadId;
 
-            return RedirectToAction("AddUserToChat","Chat", new RouteValueDictionary(new { Controller = "Chat", Action = "AddUserToChat", NewChatModel=newchatmodel }));
+
+
+            return RedirectToAction("AddUserToChat", "Chat", new RouteValueDictionary(new { Controller = "Chat", Action = "AddUserToChat", NewChatModel = newchatmodel,chatthreadid=newchatmodel.chatthreadId }));
         }
-        public IActionResult AddUserToChat(NewChatModel newchatmodel)
+        public IActionResult AddUserToChat(NewChatModel newchatmodel,string chatthreadid)
         {
             var temp = HttpContext.User.Claims.First(x => x.Type == ClaimTypes.Email);
             var temp2 = temp;
@@ -212,15 +206,8 @@ namespace MedicalIntercomProject.Controllers
             CommunicationTokenCredential communicationTokenCredential = new CommunicationTokenCredential(AccessToken);
             Uri endpoint = new Uri(endpointstring);
             ChatClient chatClient = new ChatClient(endpoint, communicationTokenCredential);
-            ViewBag.chatthreadid = newchatmodel.chatthreadId;
-            //chatparticipant.chatclient = chatClient;
-
-            //var chatParticipant = new ChatParticipant(identifier: new CommunicationUserIdentifier(id: chatparticipant.user.ChatIdentity))
-            //{
-            //    DisplayName = chatparticipant.user.emailId
-            //};
-
-            //ChatThreadResult = chatparticipant.chatclient.GetChatThreadClient();
+            ViewBag.chatthreadid = chatthreadid;
+            
             IEnumerable<User> users = db.UsersTable.Select(s => s).ToList();
             return View(users);
         }
@@ -233,15 +220,13 @@ namespace MedicalIntercomProject.Controllers
             User userx = db.UsersTable.Where(s => s.emailId == temp2.Value).SingleOrDefault();
             var AccessToken = GetAccessTokenChat(userx);
 
-            //NewChatModel newchatmodel = ViewBag.newchatmodel;
-
             CommunicationTokenCredential communicationTokenCredential = new CommunicationTokenCredential(AccessToken);
             Uri endpoint = new Uri(endpointstring);
             ChatClient chatClient = new ChatClient(endpoint, communicationTokenCredential);
             addUserToChat.chatClient = chatClient;
             User user = db.UsersTable.SingleOrDefault(s => s.ChatIdentity == addUserToChat.id);
 
-            //var threadid = addUserToChat.chatthreadId;
+
             ChatThreadClient chatThreadClient = chatClient.GetChatThreadClient(threadId: chatthreadid);
             ChatParticipant chatParticipant = new ChatParticipant(identifier: new CommunicationUserIdentifier(id: user.ChatIdentity))
                  {
@@ -253,26 +238,10 @@ namespace MedicalIntercomProject.Controllers
             IEnumerable<User> users = db.UsersTable.Select(s => s).ToList();
 
 
-            return RedirectToAction("AddUserToChat", "Chat", new RouteValueDictionary(new { Controller = "Chat", Action = "AddUserToChat", users }));
+            return RedirectToAction("AddUserToChat", "Chat", new RouteValueDictionary(new { Controller = "Chat", Action = "AddUserToChat", users ,chatthreadid}));
         }
 
-        //public IActionResult NewChatPage()
-        //{
-        //   
-        //}
-        //[HttpPost]
-        //public IActionResult NewChatParticipants(ChatParticipantModel chatParticipantModel)
-        //{
-
-
-        //    var chatParticipant = new ChatParticipant(identifier: new CommunicationUserIdentifier(id: chatParticipantModel.ChatIdentity))
-        //    {
-
-        //        DisplayName = chatParticipantModel.EmailId
-        //    };
-
-        //    return RedirectToAction("NewChatPage");
-        //}
+       
          
         
         public IActionResult DeleteChatThread(string threadId)
@@ -281,8 +250,6 @@ namespace MedicalIntercomProject.Controllers
             var temp2 = temp;
             User userx = db.UsersTable.Where(s => s.emailId == temp2.Value).SingleOrDefault();
             var AccessToken = GetAccessTokenChat(userx);
-
-            //NewChatModel newchatmodel = ViewBag.newchatmodel;
 
             CommunicationTokenCredential communicationTokenCredential = new CommunicationTokenCredential(AccessToken);
             Uri endpoint = new Uri(endpointstring);
@@ -298,8 +265,6 @@ namespace MedicalIntercomProject.Controllers
             User userx = db.UsersTable.Where(s => s.emailId == temp2.Value).SingleOrDefault();
             var AccessToken = GetAccessTokenChat(userx);
 
-            //NewChatModel newchatmodel = ViewBag.newchatmodel;
-
             CommunicationTokenCredential communicationTokenCredential = new CommunicationTokenCredential(AccessToken);
             Uri endpoint = new Uri(endpointstring);
             ChatClient chatClient = new ChatClient(endpoint, communicationTokenCredential);
@@ -309,6 +274,11 @@ namespace MedicalIntercomProject.Controllers
 
 
 
+            return RedirectToAction("GetMessages", new RouteValueDictionary(new { Controller = "Chat", Action = "GetMessages", chatThreadId = chatthreadId }));
+        }
+
+        public IActionResult ChatCreated (string chatthreadId)
+        {
             return RedirectToAction("GetMessages", new RouteValueDictionary(new { Controller = "Chat", Action = "GetMessages", chatThreadId = chatthreadId }));
         }
 
