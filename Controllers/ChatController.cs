@@ -74,7 +74,7 @@ namespace MedicalIntercomProject.Controllers
             List<Message> listx = new List<Message>();
             foreach (ChatMessage messages in allMessages)
             {
-                if (messages.SenderDisplayName != "" | messages.Content.Message != "")
+                if (messages.SenderDisplayName != "" | messages.Content.Message != ""| messages.SenderDisplayName != null | messages.Content.Message !=null)
                 {
                     Message messagevar = new Message();
                     messagevar.MessageId = messages.Id;
@@ -124,7 +124,7 @@ namespace MedicalIntercomProject.Controllers
                 
                 foreach (ChatThreadItem chatThreadItem in chatThreadItems)
                 {
-                    if (chatThreadItem.DeletedOn != null)
+                    if (chatThreadItem.DeletedOn == null)
                     {
                         CurrentUserThreads item = new CurrentUserThreads();
                         item.chatClient = currentUserThreads.chatClient;
