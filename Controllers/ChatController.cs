@@ -74,7 +74,7 @@ namespace MedicalIntercomProject.Controllers
             List<Message> listx = new List<Message>();
             foreach (ChatMessage messages in allMessages)
             {
-                if (messages.SenderDisplayName != "" | messages.Content.Message != ""| messages.SenderDisplayName != null | messages.Content.Message !=null)
+                if (messages.SenderDisplayName != "" & messages.Content.Message != "" & messages.SenderDisplayName != null & messages.Content.Message !=null & messages.DeletedOn == null)
                 {
                     Message messagevar = new Message();
                     messagevar.MessageId = messages.Id;
@@ -185,6 +185,10 @@ namespace MedicalIntercomProject.Controllers
             };
 
             CreateChatThreadResult createChatThreadResult = newchatmodel.chatClient.CreateChatThread(topic: newchatmodel.chattopic, participants: new[] { chatParticipant });
+
+            ChatThreadClient chatThreadClient = chatClient.GetChatThreadClient(threadId: createChatThreadResult.ChatThread.Id);
+
+            SendChatMessageResult sendChatMessageResult = chatThreadClient.SendMessage("Chat Created", ChatMessageType.Text, "System");
 
             newchatmodel.chattopic = createChatThreadResult.ChatThread.Topic;
             newchatmodel.chatthreadId = createChatThreadResult.ChatThread.Id;
