@@ -1,20 +1,18 @@
 ﻿@model Message;
-@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-
-        
+<style>
+p.left{
+    text-align:left;
+}
+p.right{
+    text-align:right;
+}
+</style>
 
     @foreach (var message in ViewBag.varlist)
     {
         <input type="hidden" name="chatthreadid" value="@message.chatthreadId">
         
-        //<input asp-controller="Chat" asp-action="DeleteMessage" asp-all-route-data="parms">
-   <p> @message.senderDisplayName :  @message.chatmessage </p><br />
-   @*<form asp-action="DeleteMessage">
-   <input type="hidden" name="chatthreadid" value="@message.chatthreadId">
-   <input name="messageid" type="submit" value="@message.MessageId" >
-   </form>*@
+   <p class="right"> @message.senderDisplayName :  @message.chatmessage </p><br />
 
    @Html.ActionLink("Delete","DeleteMessage","Chat", new { messageid=@message.MessageId, chatthreadId=@message.chatthreadId})
    

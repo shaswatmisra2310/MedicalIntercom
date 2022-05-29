@@ -81,6 +81,7 @@ namespace MedicalIntercomProject.Controllers
                     messagevar.chatmessage = messages.Content.Message;
                     messagevar.chatthreadId = chatthreadId;
                     messagevar.senderDisplayName = messages.SenderDisplayName;
+                    messagevar.currentuseremail = user.emailId;
                     listx.Add(messagevar);
                 }
             }

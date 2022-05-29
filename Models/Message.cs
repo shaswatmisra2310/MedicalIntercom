@@ -7,5 +7,7 @@
         public string? MessageId { get; set; }
 
         public string? senderDisplayName { get; set; }
+
+        public string? currentuseremail { get; set; }
     }
 }
