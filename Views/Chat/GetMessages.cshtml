@@ -10,12 +10,18 @@ p.right{
 
     @foreach (var message in ViewBag.varlist)
     {
-        <input type="hidden" name="chatthreadid" value="@message.chatthreadId">
-        
-   <p class="right"> @message.senderDisplayName :  @message.chatmessage </p><br />
+    <input type="hidden" name="chatthreadid" value="@message.chatthreadId">
+    if (@message.currentuseremail == @message.senderDisplayName)
+    {
+        <p class="right"> @message.senderDisplayName :  @message.chatmessage </p><br />
 
-   @Html.ActionLink("Delete","DeleteMessage","Chat", new { messageid=@message.MessageId, chatthreadId=@message.chatthreadId})
-   
+        @Html.ActionLink("Delete","DeleteMessage","Chat", new { messageid=@message.MessageId, chatthreadId=@message.chatthreadId})
+    }
+    else
+    {
+        <p class="left"> @message.senderDisplayName :  @message.chatmessage </p><br /> 
+    }
+
     }                              
     @using(Html.BeginForm("SendMessage", "Chat"))
 {
