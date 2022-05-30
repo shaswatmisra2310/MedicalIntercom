@@ -14,8 +14,9 @@
     {
         @*<input type="hidden" name="chatthreadid" value="@thread.ChatThreadIds"> *@
         <input type="hidden" name="chatclient" value="@thread.chatClient"> 
-        <p>&nbsp;</p>
+        
         @Html.ActionLink(@thread.ChatTopics,"GetMessages","Chat",new {chatThreadId=@thread.ChatThreadIds})
+       
         @Html.ActionLink("Delete","DeleteChatThread","Chat",new {threadId=@thread.ChatThreadIds})
         <br />
     }

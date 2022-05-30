@@ -6,6 +6,9 @@ p.left{
 p.right{
     text-align:right;
 }
+label.right{
+    text-align:right;
+}
 </style>
 
     @foreach (var message in ViewBag.varlist)
@@ -13,9 +16,10 @@ p.right{
     <input type="hidden" name="chatthreadid" value="@message.chatthreadId">
     if (@message.currentuseremail == @message.senderDisplayName)
     {
-        <p class="right"> @message.senderDisplayName :  @message.chatmessage </p><br />
+        <p class="right"> @message.senderDisplayName :  @message.chatmessage 
 
-        @Html.ActionLink("Delete","DeleteMessage","Chat", new { messageid=@message.MessageId, chatthreadId=@message.chatthreadId})
+        @Html.ActionLink("Delete","DeleteMessage","Chat", new { messageid=@message.MessageId, chatthreadId=@message.chatthreadId}) </p> 
+       <br />
     }
     else
     {
