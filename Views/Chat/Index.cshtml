@@ -8,16 +8,18 @@
         <form>
         <button id="newchat-button" asp-controller="Chat" asp-action="CreateNewChat" >create new chat</button>
         </form>
+        <br />
         @using (Html.BeginForm("GetMessages","Chat"))
         {
-        @foreach(CurrentUserThreads thread in ViewBag.threads)     
-    {
-        @*<input type="hidden" name="chatthreadid" value="@thread.ChatThreadIds"> *@
-        <input type="hidden" name="chatclient" value="@thread.chatClient"> 
-        
-        @Html.ActionLink(@thread.ChatTopics,"GetMessages","Chat",new {chatThreadId=@thread.ChatThreadIds})
-       
+        @foreach (CurrentUserThreads thread in ViewBag.threads)
+        {
+            @*<input type="hidden" name="chatthreadid" value="@thread.ChatThreadIds"> *@
+            <input type="hidden" name="chatclient" value="@thread.chatClient"> 
+
+            @Html.ActionLink(@thread.ChatTopics,"GetMessages","Chat",new {chatThreadId=@thread.ChatThreadIds}, new {@class="btn btn-primary"})
+            <text>                       </text>
         @Html.ActionLink("Delete","DeleteChatThread","Chat",new {threadId=@thread.ChatThreadIds})
+        <br />
         <br />
     }
         }

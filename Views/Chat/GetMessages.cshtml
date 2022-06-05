@@ -6,9 +6,15 @@ p.left{
 p.right{
     text-align:right;
 }
-label.right{
-    text-align:right;
+p.bottom{
+    align-items:end;
 }
+/*div {
+    background: blue;
+    border-radius: 5px;
+    width:200 px;
+    height: 20px;
+}*/
 </style>
 
     @foreach (var message in ViewBag.varlist)
@@ -16,14 +22,19 @@ label.right{
     <input type="hidden" name="chatthreadid" value="@message.chatthreadId">
     if (@message.currentuseremail == @message.senderDisplayName)
     {
+        <div>
         <p class="right"> @message.senderDisplayName :  @message.chatmessage 
 
         @Html.ActionLink("Delete","DeleteMessage","Chat", new { messageid=@message.MessageId, chatthreadId=@message.chatthreadId}) </p> 
+        </div>
        <br />
     }
     else
     {
-        <p class="left"> @message.senderDisplayName :  @message.chatmessage </p><br /> 
+        <div>
+        <p class="left"> @message.senderDisplayName :  @message.chatmessage </p>
+        </div>
+        <br /> 
     }
 
     }                              
@@ -35,7 +46,10 @@ label.right{
         <input type="hidden" name="chatthreadId" value="@message.chatthreadId">
         
     }
+    <div>
+     <p class="bottom">
     <input type="text" name="message" >
     <input type="submit" name="sendmessage" >
+    </div>
 }
 @Html.ActionLink("Back to chat home","Index","Chat")
