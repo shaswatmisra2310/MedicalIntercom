@@ -16,7 +16,7 @@ p.bottom{
     height: 20px;
 }*/
 </style>
-
+@Html.Partial("_Index")
     @foreach (var message in ViewBag.varlist)
     {
     <input type="hidden" name="chatthreadid" value="@message.chatthreadId">

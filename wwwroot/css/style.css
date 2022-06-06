@@ -13,7 +13,7 @@ body{
 }
 .sidebar{
     height:100%;
-    width:78px;
+    width:50px;
     position:fixed;
     top:0;
     left:0;
@@ -31,7 +31,7 @@ body{
     display:flex;
     height:50px;
     width:100%;
-    align-items:center;
+    align-items:initial;
     opacity: 0;
     pointer-events:none;
 }
@@ -43,7 +43,7 @@ body{
 
     .logo_content .logo i {
         font-size: 28px;
-        margin-right: 5px;
+        margin-left: 0px;
     }
 
 .logo_content .logo .logo_name{
@@ -71,7 +71,7 @@ body{
 .sidebar ul li{
     position: relative;
     height: 50px;
-    width:60%;
+    width:90%;
     margin: 0 5px;
     list-style: none;
     line-height: 50px;
@@ -108,8 +108,8 @@ body{
 
     .sidebar ul li a i{
         height: 50px;
-        min-width:50px;
+        min-width:10px;
         border-radius: 12px;
         line-height: 50px;
-        text-align: center;
+        text-align:start;
     }

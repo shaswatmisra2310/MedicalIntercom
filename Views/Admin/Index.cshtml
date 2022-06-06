@@ -1,7 +1,7 @@
 ﻿@model MedicalIntercomProject.Models.User
-
-<p>this is admin index page</p>
-
+@Html.Partial("_Index")
+Welcome
+@*
 <form asp-controller="Admin" asp-action="NewUser" method="post">     
 	<button class="btn btn-primary btn-lg">Create New User</button>
 </form>
@@ -17,4 +17,4 @@
 <form asp-controller="Login" asp-action="Logout" method="post">
 	<button class="btn btn-primary btn-lg">Logout</button>
 </form>
-
+*@
