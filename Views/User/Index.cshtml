@@ -1,10 +1,9 @@
 ﻿@model IEnumerable<MedicalIntercomProject.Models.User>
-@Html.Partial("_Index")
 @{
     ViewData["Title"] = "User Management";
 }
-@Html.Partial("_Index")
-<h1>Dashboard</h1>
+
+<h1>Users Dashboard</h1>
 
 <p>
     @Html.ActionLink("Create new user", "NewUser", "Admin",null, new { @class="btn btn-primary"})

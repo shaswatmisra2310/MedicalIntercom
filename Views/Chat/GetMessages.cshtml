@@ -16,7 +16,10 @@ p.bottom{
     height: 20px;
 }*/
 </style>
+@if(ViewBag.currentUser=="Admin")
 @Html.Partial("_Index")
+else
+@Html.Partial("_Index_user")
     @foreach (var message in ViewBag.varlist)
     {
     <input type="hidden" name="chatthreadid" value="@message.chatthreadId">

@@ -3,16 +3,13 @@
 @{
     ViewData["Title"] = "AddUserToChat";
 }
+@if(ViewBag.currentUser=="Admin")
 @Html.Partial("_Index")
-<h1>Add User To Chat</h1>
-@Html.BeginForm("Add","Chat")
-{
-@*<input type="hidden" name="chatthreadid" value="@ViewBag.chatthreadId" />*@
+else
+@Html.Partial("_Index_user")
 
-@*
-<p>
-    <a asp-action="Create">Create New chat</a>
-</p>*@
+<h1>Add User To Chat</h1>
+
 <table class="table">
     <thead>
         <tr>
@@ -47,13 +44,12 @@
                 @Html.DisplayFor(modelItem => item.ChatIdentity)
             </td>
             <td>
-                @Html.ActionLink("Add","Add","Chat",new {id=@item.ChatIdentity ,chatthreadid=@ViewBag.chatthreadId})        @*send new chat model, basically chat thread id from create new chat to add user to chat*@
+                @Html.ActionLink("Add","Add","Chat",new {id=@item.ChatIdentity ,chatthreadid=@ViewBag.chatthreadId}) 
             </td>
         </tr>
         }
 
-}
-@Html.BeginForm("ChatCreated","Chat")
+
       @Html.ActionLink("Done","ChatCreated","Chat", new {@ViewBag.chatthreadId})
 
     </tbody>

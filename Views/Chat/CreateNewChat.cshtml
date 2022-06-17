@@ -1,5 +1,8 @@
 ﻿@model NewChatModel
+@if(ViewBag.currentUser=="Admin")
 @Html.Partial("_Index")
+else
+@Html.Partial("_Index_user")
 @using (Html.BeginForm("startchat","Chat"))
 {
 

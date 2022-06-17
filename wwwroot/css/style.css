@@ -10,10 +10,11 @@ body{
     min-height:100vh;
     width:100%;
     overflow:hidden;
+
 }
 .sidebar{
     height:100%;
-    width:50px;
+    width:240px;
     position:fixed;
     top:0;
     left:0;
@@ -23,7 +24,7 @@ body{
 }
 
 .sidebar.active{
-    width:240px;
+    width:290px;
 }
 
 .sidebar .logo_content .logo{
@@ -38,12 +39,12 @@ body{
 
     .sidebar.active .logo_content .logo{
         opacity: 1;
-        pointer-events:none;
+        pointer-events:auto;
     }
 
     .logo_content .logo i {
         font-size: 28px;
-        margin-left: 0px;
+        margin-right: 100px;
     }
 
 .logo_content .logo .logo_name{
@@ -71,7 +72,7 @@ body{
 .sidebar ul li{
     position: relative;
     height: 50px;
-    width:90%;
+    width:120%;
     margin: 0 5px;
     list-style: none;
     line-height: 50px;
@@ -84,7 +85,7 @@ body{
 .sidebar ul li a {
     color: #fff;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     text-decoration: none;
     transition: all 0.4s ease;
     border-radius: 12px;
@@ -106,10 +107,17 @@ body{
         background: #fff;
     }
 
-    .sidebar ul li a i{
-        height: 50px;
-        min-width:10px;
-        border-radius: 12px;
-        line-height: 50px;
-        text-align:start;
+.sidebar ul li a i {
+    height: 50px;
+    min-width: 10px;
+    border-radius: 12px;
+    line-height: 50px;
+    text-align: left;
+    opacity: 0;
+    pointer-events: none;
+}
+
+    .sidebar.active ul li a i{
+        opacity:1;
+        pointer-events:auto;
     }

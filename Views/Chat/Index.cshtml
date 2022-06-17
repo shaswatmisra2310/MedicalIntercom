@@ -1,4 +1,7 @@
-﻿@Html.Partial("_Index")
+﻿@if(ViewBag.currentUser=="Admin")
+@Html.Partial("_Index")
+else
+@Html.Partial("_Index_user")
 <html>
     <head>
     <meta charset="utf-8">

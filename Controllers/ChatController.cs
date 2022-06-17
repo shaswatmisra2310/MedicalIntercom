@@ -37,6 +37,9 @@ namespace MedicalIntercomProject.Controllers
             currentUserThreads.chatClient=chatClient;
 
             ViewBag.threads = GetThreads(currentUserThreads); //pass to view and print with click options
+            if(user.RoleId==1)
+            ViewBag.currentuser = "Admin";
+
             //ViewBag.threads = Listofthreads;
             // async Task newchat(ChatClient chatClient, User user)
             //{
@@ -60,6 +63,9 @@ namespace MedicalIntercomProject.Controllers
             var temp = HttpContext.User.Claims.First(x => x.Type == ClaimTypes.Email);
             var temp2 = temp;
             User user = db.UsersTable.Where(s => s.emailId == temp2.Value).SingleOrDefault();
+
+            if (user.RoleId == 1)
+                ViewBag.currentuser = "Admin";
 
             var AccessToken = GetAccessTokenChat(user);
 
@@ -158,7 +164,11 @@ namespace MedicalIntercomProject.Controllers
 
         public IActionResult CreateNewChat()
         {
-           
+            var temp = HttpContext.User.Claims.First(x => x.Type == ClaimTypes.Email);
+            var temp2 = temp;
+            User user = db.UsersTable.Where(s => s.emailId == temp2.Value).SingleOrDefault();
+            if (user.RoleId == 1)
+                ViewBag.currentuser = "Admin";
             return View();
             
         }
@@ -172,6 +182,9 @@ namespace MedicalIntercomProject.Controllers
             newchatmodel.currentuser = user;
             newchatmodel.chattopic = chattopic;
             var AccessToken = GetAccessTokenChat(user);
+
+            if (user.RoleId == 1)
+                ViewBag.currentuser = "Admin";
 
 
             CommunicationTokenCredential communicationTokenCredential = new CommunicationTokenCredential(AccessToken);
